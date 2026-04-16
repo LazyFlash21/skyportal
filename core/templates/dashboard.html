@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard – Sky Portal{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Stats Row -->
+<div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px;">
+    
+    <div class="card stat-card">
+        <div class="stat-label">Active Projects</div>
+        <div class="stat-number">6+</div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">Total Teams</div>
+        <div class="stat-number">{{ total_teams }}</div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">Departments</div>
+        <div class="stat-number">{{ total_depts }}</div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">Total Engineers</div>
+        <div class="stat-number">230+</div>
+    </div>
+
+</div>
+
+<!-- Recent Activity -->
+<div class="card" style="margin-bottom:24px;">
+    <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">Recent Activity</h3>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+        
+        {% for team in teams %}
+        <div class="activity-card">
+            <p class="activity-title">{{ team.name }}</p>
+            <p class="activity-sub">{{ team.department.name }}</p>
+            <p class="activity-time">👤 {{ team.leader }}</p>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">Quick Actions</h3>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+
+        <a href="#" class="action-card">
+            <span class="action-icon">📥</span>
+            <p class="action-title">Check Inbox</p>
+        </a>
+
+        <a href="{% url 'teams' %}" class="action-card">
+            <span class="action-icon">🔍</span>
+            <p class="action-title">Find Team</p>
+        </a>
+
+        <a href="#" class="action-card">
+            <span class="action-icon">📊</span>
+            <p class="action-title">Check Reports</p>
+        </a>
+
+        <a href="#" class="action-card">
+            <span class="action-icon">📅</span>
+            <p class="action-title">Schedule Meeting</p>
+        </a>
+
+        <a href="#" class="action-card">
+            <span class="action-icon">🏢</span>
+            <p class="action-title">Organisation</p>
+        </a>
+
+        <a href="#" class="action-card">
+            <span class="action-icon">📈</span>
+            <p class="action-title">Data Visualisation</p>
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

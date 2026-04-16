@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Teams – Sky Portal{% endblock %}
+
+{% block page_title %}Teams{% endblock %}
+
+{% block content %}
+
+<div class="card" style="margin-bottom:24px;">
+    <form method="GET" class="search-form">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search teams, departments or managers..."
+            class="search-bar"
+            style="flex:1; max-width:100%;"
+        >
+        <select name="dept" class="form-select">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept.id }}" {% if dept_filter == dept.id|stringformat:"s" %}selected{% endif %}>
+                {{ dept.name }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+        {% if query or dept_filter %}
+            <a href="{% url 'teams' %}" class="btn btn-outline">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<p class="results-count">
+    Showing <strong>{{ teams.count }}</strong> team{% if teams.count != 1 %}s{% endif %}
+    {% if query %} for "<strong>{{ query }}</strong>"{% endif %}
+</p>
+
+<div class="team-grid">
+    {% for team in teams %}
+    <div class="card team-card">
+        <div class="team-card-header">
+            <h3>{{ team.name }}</h3>
+            <span class="team-badge">{{ team.department.name }}</span>
+        </div>
+        <div class="team-card-info">
+            <p>👤 <strong>{{ team.leader }}</strong></p>
+            {% if team.slack_channels %}
+            <p>💬 {{ team.slack_channels }}</p>
+            {% endif %}
+            {% if team.key_skills %}
+            <p>🛠 {{ team.key_skills }}</p>
+            {% endif %}
+        </div>
+        <div class="team-card-actions">
+            <a href="{% url 'team_detail' team.id %}" class="btn btn-primary btn-sm">View Details</a>
+            <a href="mailto:{{ team.leader|lower|cut:' ' }}@sky.uk" class="btn btn-outline btn-sm">Email Team</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <p>No teams found for "{{ query }}"</p>
+        <a href="{% url 'teams' %}" class="btn btn-primary">View all teams</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

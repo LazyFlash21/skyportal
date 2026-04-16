@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team.name }} – Sky Portal{% endblock %}
+
+{% block page_title %}Team Details{% endblock %}
+
+{% block content %}
+
+<div class="card team-detail-header">
+    <div>
+        <h2>{{ team.name }}</h2>
+        <span class="team-badge">{{ team.department.name }}</span>
+    </div>
+    <div class="team-detail-actions">
+        <a href="mailto:{{ team.leader|lower|cut:' ' }}@sky.uk" class="btn btn-primary">Email Team</a>
+        <a href="{% url 'schedule' %}" class="btn btn-primary">Schedule Meeting</a>
+        <a href="{% url 'teams' %}" class="btn btn-outline">← Back</a>
+    </div>
+</div>
+
+<div class="team-detail-grid">
+
+    <div class="card">
+        <h3 class="card-title">Team Mission</h3>
+        <p class="card-subtitle">{{ team.development_focus|default:"No mission statement available." }}</p>
+        {% if team.github_repo %}
+        <p class="card-meta">🔗 <a href="{{ team.github_repo }}" class="link-sky">GitHub Repository</a></p>
+        {% endif %}
+        {% if team.jira_board %}
+        <p class="card-meta">📋 <a href="{{ team.jira_board }}" class="link-sky">Jira Board</a></p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Key Contacts</h3>
+        <p class="mb-8"><strong>Team Leader:</strong><br>{{ team.leader }}</p>
+        <p class="mb-8"><strong>Department Head:</strong><br>{{ team.department.head }}</p>
+        {% if team.slack_channels %}
+        <p class="mb-8"><strong>Slack:</strong><br>
+            <span class="link-sky">{{ team.slack_channels }}</span>
+        </p>
+        {% endif %}
+        {% if team.team_wiki %}
+        <p><strong>Wiki:</strong><br>
+            <a href="{{ team.team_wiki }}" class="link-sky">View Wiki</a>
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Quick Info</h3>
+        {% if team.concurrent_projects %}
+        <p class="mb-8"><strong>Concurrent Projects:</strong><br>
+            <span class="stat-number">{{ team.concurrent_projects }}</span>
+        </p>
+        {% endif %}
+        {% if team.agile_practices %}
+        <p class="mb-8"><strong>Agile:</strong><br>{{ team.agile_practices }}</p>
+        {% endif %}
+        {% if team.standup_time %}
+        <p><strong>Standup:</strong><br>{{ team.standup_time }}</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="team-bottom-grid">
+
+    <div class="card">
+        <h3 class="card-title">🛠 Key Skills & Technologies</h3>
+        {% if team.key_skills %}
+        <div class="skill-tags">
+            {% for skill in team.key_skills.split %}
+            <span class="skill-tag">{{ skill|cut:"," }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-mid">No skills listed.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">🔗 Dependencies</h3>
+        {% if team.downstream_dependencies %}
+        <p class="mb-8"><strong>Downstream:</strong><br>
+            <span class="text-mid">{{ team.downstream_dependencies }}</span>
+        </p>
+        {% endif %}
+        {% if team.dependency_type %}
+        <p><strong>Type:</strong><br>
+            <span class="text-mid">{{ team.dependency_type }}</span>
+        </p>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="card members-card">
+    <h3 class="card-title">👥 Team Members</h3>
+    {% if members %}
+    <table class="team-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Skills</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.role }}</td>
+                <td><a href="mailto:{{ member.email }}" class="link-sky">{{ member.email }}</a></td>
+                <td>{{ member.skills }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-mid">No members added yet. Add them through the admin panel.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

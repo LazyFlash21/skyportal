@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sky Portal{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    /*SIDEBAR/*
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{% static 'images/Sky_Group_logo_2020.png' %}" alt="Sky Logo" style="width:80px;">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+            <a href="{% url 'teams' %}" class="nav-link {% if request.resolver_match.url_name == 'teams' or request.resolver_match.url_name == 'team_detail' %}active{% endif %}">Teams</a>
+            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'organisation' %}active{% endif %}">Organisation</a>
+            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'messages_view' %}active{% endif %}">Messages</a>
+            <a href="{% url 'schedule' %}" class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">Schedule</a>
+            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">Reports</a>
+            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'data_visualisation' %}active{% endif %}">Data Visualisation</a>
+        </nav>
+    </aside>
+
+    /*MAIN AREA*/
+    <div class="main-wrapper">
+
+        /*HEADER*/
+        <header class="top-header">
+            <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            <div class="header-right">
+                <input type="text" class="search-bar" placeholder="Search">
+                <a href="{% url 'profile' %}" class="btn-profile">Profile</a>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </header>
+
+        /* PAGE CONTENT */
+        <main class="main-content">
+            {% if messages %}
+                <div class="django-messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        /* FOOTER */
+        <footer class="main-footer">
+            <p>&copy; 2025 Sky UK Ltd | All rights reserved</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

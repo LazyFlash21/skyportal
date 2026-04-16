@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile – Sky Portal{% endblock %}
+
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+    <!-- Profile Details -->
+    <div class="card">
+        <h3 style="margin-bottom:20px;">Profile Details</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" name="first_name" value="{{ request.user.first_name }}" placeholder="Enter first name">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="{{ request.user.last_name }}" placeholder="Enter last name">
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" value="{{ request.user.username }}" disabled style="background:#f5f5f5;">
+            </div>
+            <div class="form-group" style="margin-bottom:24px;">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ request.user.email }}" placeholder="Enter email">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- Account Info -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+        
+        <div class="card">
+            <h3 style="margin-bottom:16px;">Account Info</h3>
+            <div style="display:flex; flex-direction:column; gap:12px; font-size:0.9rem;">
+                <div style="display:flex; justify-content:space-between; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-mid);">Username</span>
+                    <strong>{{ request.user.username }}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-mid);">Member since</span>
+                    <strong>{{ request.user.date_joined|date:"d M Y" }}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-mid);">Last login</span>
+                    <strong>{{ request.user.last_login|date:"d M Y" }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:16px;">Security</h3>
+            <p style="color:var(--text-mid); font-size:0.9rem; margin-bottom:16px;">
+                Keep your account secure by using a strong password.
+            </p>
+            <a href="{% url 'change_password' %}" class="btn btn-outline btn-full">Change Password</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
