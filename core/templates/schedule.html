@@ -1,12 +1,422 @@
 {% extends 'base.html' %}
-
+ 
 {% block title %}Schedule – Sky Portal{% endblock %}
-
+ 
 {% block page_title %}Schedule{% endblock %}
-
+ 
 {% block content %}
-<div class="card" style="text-align:center; padding:60px;">
-    <h2 style="margin-bottom:12px;">Schedule Meeting</h2>
-    <p style="color:var(--text-mid);">This page is being built by your teammate. Coming soon!</p>
+ 
+<style>
+:root {
+  --sky-blue: #0072ce;
+  --sky-dark: #003c7e;
+  --sky-light: #e8f2fb;
+  --sky-accent: #00b2ff;
+  --bg: #f4f7fc;
+  --white: #ffffff;
+  --text: #1a2233;
+  --muted: #6b7a99;
+  --green: #12b76a;
+  --amber: #f79009;
+  --red: #f04438;
+  --radius: 12px;
+  --shadow: 0 2px 16px rgba(0,60,126,0.08);
+}
+.tabs { display:flex; gap:4px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:4px; width:fit-content; margin-bottom:24px; }
+.tab { padding:7px 20px; border-radius:8px; font-size:.875rem; font-weight:500; cursor:pointer; border:none; background:transparent; color:var(--muted); transition:background .15s,color .15s; }
+.tab.active { background:var(--sky-blue); color:#fff; font-weight:600; }
+.view-panel { display:none; }
+.view-panel.active { display:block; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); }
+.stat-card .stat-label { font-size:.8rem; color:var(--muted); margin-bottom:6px; }
+.stat-card .stat-value { font-size:1.8rem; font-weight:700; color:var(--sky-dark); }
+.stat-card .stat-sub { font-size:.8rem; color:var(--green); margin-top:4px; }
+.sch-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:24px; }
+.sch-card-title { font-size:1rem; font-weight:700; color:var(--sky-dark); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-group.full { grid-column:1/-1; }
+.form-group label { font-size:.8rem; font-weight:600; color:var(--text); }
+.form-group input, .form-group select, .form-group textarea { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:.875rem; color:var(--text); background:var(--white); transition:border-color .2s; outline:none; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--sky-blue); }
+.form-group textarea { resize:vertical; min-height:90px; }
+.platform-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.platform-btn { border:1.5px solid var(--border); border-radius:8px; padding:10px 8px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; background:#fff; transition:border-color .2s,background .2s; font-size:.78rem; color:var(--muted); font-weight:500; }
+.platform-btn.selected { border-color:var(--sky-blue); background:var(--sky-light); color:var(--sky-blue); }
+.platform-btn svg { width:24px; height:24px; }
+.attendees-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.attendee-tag { background:var(--sky-light); color:var(--sky-dark); padding:4px 12px; border-radius:20px; font-size:.8rem; display:flex; align-items:center; gap:6px; }
+.attendee-tag button { background:none; border:none; cursor:pointer; color:var(--muted); font-size:.9rem; line-height:1; }
+.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+.meeting-list { display:flex; flex-direction:column; gap:12px; }
+.meeting-item { display:flex; align-items:center; gap:16px; padding:16px 18px; border:1px solid var(--border); border-radius:var(--radius); background:var(--white); box-shadow:var(--shadow); transition:border-color .2s; }
+.meeting-item:hover { border-color:var(--sky-blue); }
+.meeting-date-block { width:52px; text-align:center; flex-shrink:0; }
+.meeting-date-block .day { font-size:1.5rem; font-weight:700; color:var(--sky-blue); line-height:1; }
+.meeting-date-block .month { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+.meeting-divider { width:1px; height:40px; background:var(--border); flex-shrink:0; }
+.meeting-info { flex:1; }
+.meeting-info h4 { font-size:.95rem; font-weight:600; color:var(--text); margin-bottom:3px; }
+.meeting-info .meeting-meta { font-size:.8rem; color:var(--muted); display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.badge { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:20px; font-size:.75rem; font-weight:600; }
+.badge-blue { background:#dbeafe; color:#1d4ed8; }
+.badge-green { background:#dcfce7; color:#166534; }
+.badge-amber { background:#fef3c7; color:#92400e; }
+.meeting-actions { display:flex; gap:8px; }
+.week-nav { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.week-nav h3 { font-size:1rem; font-weight:600; flex:1; }
+.week-nav button { background:var(--white); border:1px solid var(--border); border-radius:6px; padding:5px 12px; cursor:pointer; font-size:.85rem; color:var(--muted); transition:border-color .2s; }
+.week-nav button:hover { border-color:var(--sky-blue); color:var(--sky-blue); }
+.week-grid { display:grid; grid-template-columns:70px repeat(7,1fr); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--white); }
+.week-header { background:var(--sky-dark); color:#fff; padding:10px 8px; text-align:center; font-size:.78rem; font-weight:600; }
+.week-header.today { background:var(--sky-blue); }
+.week-time { padding:8px 10px; font-size:.72rem; color:var(--muted); border-right:1px solid var(--border); border-bottom:1px solid var(--border); text-align:right; }
+.week-cell { border-right:1px solid var(--border); border-bottom:1px solid var(--border); min-height:40px; padding:2px; }
+.week-cell.today-col { background:#f0f7ff; }
+.week-event { background:var(--sky-blue); color:#fff; border-radius:4px; padding:2px 5px; font-size:.7rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+.week-event.green { background:var(--green); }
+.week-event.amber { background:var(--amber); }
+.month-nav { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.month-nav h3 { font-size:1.1rem; font-weight:700; flex:1; color:var(--sky-dark); }
+.month-nav button { background:var(--white); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; font-size:.85rem; color:var(--sky-dark); }
+.month-nav button:hover { border-color:var(--sky-blue); color:var(--sky-blue); }
+.month-grid { display:grid; grid-template-columns:repeat(7,1fr); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--white); }
+.month-dow { background:var(--sky-dark); color:#fff; padding:10px; text-align:center; font-size:.78rem; font-weight:600; }
+.month-day { border-right:1px solid var(--border); border-bottom:1px solid var(--border); min-height:100px; padding:8px; cursor:pointer; transition:background .15s; }
+.month-day:hover { background:var(--sky-light); }
+.month-day.other-month { background:#fafbfc; }
+.month-day.today { background:#e8f2fb; }
+.day-num { font-size:.8rem; font-weight:600; color:var(--text); width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:50%; margin-bottom:4px; }
+.month-day.today .day-num { background:var(--sky-blue); color:#fff; }
+.month-event { background:var(--sky-blue); color:#fff; border-radius:3px; padding:1px 5px; font-size:.68rem; font-weight:600; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+.month-event.green { background:var(--green); }
+.month-event.amber { background:var(--amber); }
+.more-events { font-size:.68rem; color:var(--sky-blue); font-weight:600; cursor:pointer; }
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,30,80,.45); backdrop-filter:blur(3px); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:16px; padding:32px; width:560px; max-width:95vw; box-shadow:0 20px 60px rgba(0,30,80,.2); animation:slideUp .25s ease; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1} }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.modal-header h3 { font-size:1.1rem; font-weight:700; color:var(--sky-dark); }
+.modal-close { background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--muted); line-height:1; }
+.toast { position:fixed; bottom:28px; right:28px; background:var(--sky-dark); color:#fff; padding:12px 20px; border-radius:10px; font-size:.875rem; font-weight:500; display:flex; align-items:center; gap:10px; box-shadow:0 8px 24px rgba(0,30,80,.25); z-index:2000; transform:translateY(80px); opacity:0; transition:transform .35s ease,opacity .35s ease; }
+.toast.show { transform:translateY(0); opacity:1; }
+</style>
+ 
+<!-- UPCOMING VIEW -->
+<div id="view-upcoming" class="view-panel active">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;">
+    <div>
+      <h1 style="font-size:1.6rem;font-weight:700;color:var(--sky-dark);">📅 Schedule</h1>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:4px;">Manage and track your engineering meetings</p>
+    </div>
+    <button class="btn btn-primary" onclick="showView('schedule')">+ Schedule Meeting</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this,'upcoming')">Upcoming</button>
+    <button class="tab" onclick="switchTab(this,'weekly')">Weekly</button>
+    <button class="tab" onclick="switchTab(this,'monthly')">Monthly</button>
+    <button class="tab" onclick="switchTab(this,'schedule')">+ New</button>
+  </div>
+  <div class="grid-3">
+    <div class="stat-card"><div class="stat-label">This Week</div><div class="stat-value">4</div><div class="stat-sub">↑ 2 more than last week</div></div>
+    <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value">11</div><div class="stat-sub" style="color:var(--muted)">3 pending confirmation</div></div>
+    <div class="stat-card"><div class="stat-label">Next Meeting</div><div class="stat-value" style="font-size:1.1rem;padding-top:4px">Daily Standup</div><div class="stat-sub">Today 09:30 · Teams</div></div>
+  </div>
+  <div class="sch-card">
+    <div class="sch-card-title">📅 Upcoming Meetings</div>
+    <div class="meeting-list" id="meetingList"></div>
+  </div>
 </div>
+ 
+<!-- WEEKLY VIEW -->
+<div id="view-weekly" class="view-panel">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;">
+    <div><h1 style="font-size:1.6rem;font-weight:700;color:var(--sky-dark);">Weekly View</h1><p style="color:var(--muted);font-size:.9rem;">See all meetings at a glance</p></div>
+    <button class="btn btn-primary" onclick="showView('schedule')">+ Schedule Meeting</button>
+  </div>
+  <div class="sch-card">
+    <div class="week-nav">
+      <button onclick="changeWeek(-1)">‹ Prev</button>
+      <h3 id="weekLabel"></h3>
+      <button onclick="changeWeek(1)">Next ›</button>
+      <button onclick="goToday()">Today</button>
+    </div>
+    <div class="week-grid" id="weekGrid"></div>
+  </div>
+</div>
+ 
+<!-- MONTHLY VIEW -->
+<div id="view-monthly" class="view-panel">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;">
+    <div><h1 style="font-size:1.6rem;font-weight:700;color:var(--sky-dark);">Monthly View</h1><p style="color:var(--muted);font-size:.9rem;">Full calendar overview</p></div>
+    <button class="btn btn-primary" onclick="showView('schedule')">+ Schedule Meeting</button>
+  </div>
+  <div class="sch-card">
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)">‹</button>
+      <h3 id="monthLabel"></h3>
+      <button onclick="changeMonth(1)">›</button>
+      <button onclick="goToday()" style="margin-left:auto">Today</button>
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+  </div>
+</div>
+ 
+<!-- SCHEDULE MEETING FORM -->
+<div id="view-schedule" class="view-panel">
+  <div style="margin-bottom:28px;">
+    <h1 style="font-size:1.6rem;font-weight:700;color:var(--sky-dark);">Schedule a Meeting</h1>
+    <p style="color:var(--muted);font-size:.9rem;">Fill in the details below to book a meeting</p>
+  </div>
+  <div class="sch-card">
+    <div class="sch-card-title">✏️ Meeting Details</div>
+    <form id="scheduleForm" onsubmit="submitMeeting(event)">
+      <div class="form-grid">
+        <div class="form-group full"><label>Meeting Title *</label><input type="text" id="mtTitle" placeholder="e.g. Sprint Planning, Incident Review…" required /></div>
+        <div class="form-group"><label>Date *</label><input type="date" id="mtDate" required /></div>
+        <div class="form-group"><label>Time *</label><input type="time" id="mtTime" required /></div>
+        <div class="form-group"><label>Duration</label><select id="mtDuration"><option>15 minutes</option><option selected>30 minutes</option><option>45 minutes</option><option>1 hour</option><option>1.5 hours</option><option>2 hours</option></select></div>
+        <div class="form-group"><label>Recurrence</label><select id="mtRecurrence"><option value="none">None (one-off)</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly">Monthly</option></select></div>
+        <div class="form-group full">
+          <label>Platform *</label>
+          <div class="platform-grid">
+            <button type="button" class="platform-btn selected" data-platform="Teams" onclick="selectPlatform(this)">
+              <svg viewBox="0 0 24 24" fill="#464eb8"><path d="M20.625 7.5a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM13.5 9.375a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0zm5.625 2.625h-4.5a2.25 2.25 0 00-2.25 2.25v5.25a2.25 2.25 0 002.25 2.25h4.5a2.25 2.25 0 002.25-2.25v-5.25a2.25 2.25 0 00-2.25-2.25z"/></svg>
+              Microsoft Teams
+            </button>
+            <button type="button" class="platform-btn" data-platform="Zoom" onclick="selectPlatform(this)">
+              <svg viewBox="0 0 24 24" fill="#2D8CFF"><path d="M15.6 11.4L21 7.8v8.4l-5.4-3.6zM3 8.4A1.8 1.8 0 014.8 6.6h8.4a1.8 1.8 0 011.8 1.8v7.2a1.8 1.8 0 01-1.8 1.8H4.8A1.8 1.8 0 013 15.6V8.4z"/></svg>
+              Zoom
+            </button>
+            <button type="button" class="platform-btn" data-platform="Slack" onclick="selectPlatform(this)">
+              <svg viewBox="0 0 24 24" fill="#4A154B"><path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zm1.271 0a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z"/></svg>
+              Slack Huddle
+            </button>
+            <button type="button" class="platform-btn" data-platform="In-Person" onclick="selectPlatform(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#6b7a99" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              In-Person
+            </button>
+          </div>
+          <input type="hidden" id="mtPlatform" value="Teams" />
+        </div>
+        <div class="form-group full">
+          <label>Attendees</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="attendeeInput" placeholder="Enter name or email and press Enter" style="flex:1" onkeydown="addAttendee(event)" />
+            <button type="button" class="btn btn-outline btn-sm" onclick="addAttendeeBtn()">Add</button>
+          </div>
+          <div class="attendees-list" id="attendeesList"></div>
+        </div>
+        <div class="form-group full"><label>Message / Agenda</label><textarea id="mtMessage" placeholder="What will this meeting cover?"></textarea></div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" onclick="showView('upcoming')">Cancel</button>
+        <button type="submit" class="btn btn-primary">✓ Schedule Meeting</button>
+      </div>
+    </form>
+  </div>
+</div>
+ 
+<!-- MODAL -->
+<div class="modal-overlay" id="meetingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Meeting Details</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modalBody"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal()">Join Meeting</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+  <span id="toastMsg">Done!</span>
+</div>
+ 
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const PLATFORM_COLORS = { Teams:'badge-blue', Zoom:'badge-blue', Slack:'badge-green', 'In-Person':'badge-amber' };
+ 
+let meetings = [
+  { id:1, title:'Daily Standup', date:'2026-04-25', time:'09:30', duration:'15 minutes', platform:'Teams', attendees:['Alice Chen','Bob Patel','Chloe Wu'], message:'Daily sync – blockers & progress', color:'blue' },
+  { id:2, title:'Sprint Planning', date:'2026-04-27', time:'10:00', duration:'2 hours', platform:'Teams', attendees:['Alice Chen','David Osei','Emma Liu','Frank Ng'], message:'Plan sprint 14 stories', color:'green' },
+  { id:3, title:'Backend Code Review', date:'2026-04-28', time:'14:00', duration:'1 hour', platform:'Zoom', attendees:['Bob Patel','Chloe Wu'], message:'Review auth module PR', color:'blue' },
+  { id:4, title:'Architecture Discussion', date:'2026-04-29', time:'11:30', duration:'1.5 hours', platform:'Slack', attendees:['Alice Chen','Emma Liu','Frank Ng'], message:'Discuss microservices split', color:'amber' },
+  { id:5, title:'Stakeholder Demo', date:'2026-04-30', time:'15:00', duration:'1 hour', platform:'Teams', attendees:['Alice Chen','David Osei','Manager'], message:'Show CWK2 progress to stakeholders', color:'blue' },
+  { id:6, title:'Retrospective', date:'2026-05-02', time:'16:00', duration:'1 hour', platform:'Teams', attendees:['Full Team'], message:'Sprint 13 retro', color:'green' },
+];
+ 
+let nextId = 7;
+let attendees = [];
+let currentMonth = new Date(2026,3,1);
+let currentWeekStart = getMonday(new Date(2026,3,25));
+ 
+function showView(name) {
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='upcoming') renderUpcoming();
+  if(name==='weekly') renderWeek();
+  if(name==='monthly') renderMonth();
+  if(name==='schedule') { document.getElementById('scheduleForm').reset(); attendees=[]; renderAttendees(); document.getElementById('mtDate').valueAsDate = new Date(2026,3,25); }
+}
+ 
+function switchTab(el, view) { showView(view); }
+ 
+function renderUpcoming() {
+  const list = document.getElementById('meetingList');
+  const sorted = [...meetings].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  list.innerHTML = sorted.map(m => {
+    const d = new Date(m.date+'T'+m.time);
+    return `<div class="meeting-item">
+      <div class="meeting-date-block">
+        <div class="day">${String(d.getDate()).padStart(2,'0')}</div>
+        <div class="month">${MONTHS[d.getMonth()].slice(0,3)}</div>
+      </div>
+      <div class="meeting-divider"></div>
+      <div class="meeting-info">
+        <h4>${m.title}</h4>
+        <div class="meeting-meta">
+          <span>⏰ ${m.time}</span>
+          <span>⏱ ${m.duration}</span>
+          <span class="badge ${PLATFORM_COLORS[m.platform]||'badge-blue'}">${m.platform}</span>
+          <span>👥 ${m.attendees.length} attendee${m.attendees.length!==1?'s':''}</span>
+        </div>
+      </div>
+      <div class="meeting-actions">
+        <button class="btn btn-outline btn-sm" onclick="openModal(${m.id})">Details</button>
+        <button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;border:none" onclick="deleteMeeting(${m.id})">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+ 
+function deleteMeeting(id) { meetings = meetings.filter(m=>m.id!==id); renderUpcoming(); showToast('Meeting removed'); }
+ 
+function openModal(id) {
+  const m = meetings.find(x=>x.id===id);
+  document.getElementById('modalTitle').textContent = m.title;
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:grid;gap:12px">
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <span class="badge badge-blue">📅 ${m.date}</span>
+        <span class="badge badge-blue">⏰ ${m.time}</span>
+        <span class="badge badge-green">⏱ ${m.duration}</span>
+        <span class="badge ${PLATFORM_COLORS[m.platform]||'badge-blue'}">${m.platform}</span>
+      </div>
+      <div><strong>Attendees:</strong><div class="attendees-list" style="margin-top:6px">${m.attendees.map(a=>`<span class="attendee-tag">${a}</span>`).join('')}</div></div>
+      <div><strong>Agenda:</strong><p style="margin-top:6px;color:var(--muted);font-size:.875rem">${m.message||'No agenda provided.'}</p></div>
+    </div>`;
+  document.getElementById('meetingModal').classList.add('open');
+}
+ 
+function closeModal() { document.getElementById('meetingModal').classList.remove('open'); }
+document.getElementById('meetingModal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+ 
+function selectPlatform(btn) {
+  document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('mtPlatform').value = btn.dataset.platform;
+}
+ 
+function addAttendee(e) { if(e.key==='Enter'){e.preventDefault();addAttendeeBtn();} }
+function addAttendeeBtn() {
+  const inp = document.getElementById('attendeeInput');
+  const val = inp.value.trim();
+  if(val && !attendees.includes(val)) { attendees.push(val); renderAttendees(); }
+  inp.value='';
+}
+function removeAttendee(name) { attendees=attendees.filter(a=>a!==name); renderAttendees(); }
+function renderAttendees() {
+  document.getElementById('attendeesList').innerHTML = attendees.map(a=>
+    `<span class="attendee-tag">${a}<button onclick="removeAttendee('${a}')">×</button></span>`).join('');
+}
+ 
+function submitMeeting(e) {
+  e.preventDefault();
+  const m = { id:nextId++, title:document.getElementById('mtTitle').value, date:document.getElementById('mtDate').value, time:document.getElementById('mtTime').value, duration:document.getElementById('mtDuration').value, platform:document.getElementById('mtPlatform').value, attendees:[...attendees], message:document.getElementById('mtMessage').value, color:'blue' };
+  meetings.push(m);
+  showToast('Meeting scheduled: ' + m.title);
+  showView('upcoming');
+}
+ 
+const HOURS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+ 
+function getMonday(d) {
+  const day = d.getDay(), diff = d.getDate() - day + (day===0?-6:1);
+  const m = new Date(d); m.setDate(diff); return m;
+}
+ 
+function changeWeek(dir) { currentWeekStart.setDate(currentWeekStart.getDate()+dir*7); renderWeek(); }
+function goToday() { currentWeekStart = getMonday(new Date(2026,3,25)); renderWeek(); renderMonth(); }
+ 
+function renderWeek() {
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(currentWeekStart);d.setDate(d.getDate()+i);days.push(d);}
+  const today = new Date(2026,3,25);
+  document.getElementById('weekLabel').textContent = `${days[0].getDate()} ${MONTHS[days[0].getMonth()].slice(0,3)} – ${days[6].getDate()} ${MONTHS[days[6].getMonth()].slice(0,3)} ${days[0].getFullYear()}`;
+  let html='<div class="week-header">Time</div>';
+  days.forEach(d=>{
+    const isToday = d.toDateString()===today.toDateString();
+    html+=`<div class="week-header${isToday?' today':''}">${DAYS[d.getDay()]}<br><span style="font-size:1.1rem">${d.getDate()}</span></div>`;
+  });
+  HOURS.forEach(h=>{
+    html+=`<div class="week-time">${h}</div>`;
+    days.forEach(d=>{
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const isToday = d.toDateString()===today.toDateString();
+      const dayMeetings = meetings.filter(m=>m.date===dateStr && m.time.slice(0,2)===h.slice(0,2));
+      html+=`<div class="week-cell${isToday?' today-col':''}">`;
+      dayMeetings.forEach(m=>{ html+=`<div class="week-event ${m.color}" onclick="openModal(${m.id})" title="${m.title}">${m.title}</div>`; });
+      html+=`</div>`;
+    });
+  });
+  document.getElementById('weekGrid').innerHTML=html;
+}
+ 
+function changeMonth(dir){currentMonth.setMonth(currentMonth.getMonth()+dir);renderMonth();}
+ 
+function renderMonth(){
+  const year=currentMonth.getFullYear(), month=currentMonth.getMonth();
+  document.getElementById('monthLabel').textContent=`${MONTHS[month]} ${year}`;
+  const first=new Date(year,month,1), last=new Date(year,month+1,0);
+  const today=new Date(2026,3,25);
+  let html='';
+  DAYS.forEach(d=>{html+=`<div class="month-dow">${d}</div>`;});
+  let day=new Date(first); day.setDate(day.getDate()-day.getDay());
+  while(day<=last || day.getDay()!==0){
+    const dateStr=`${day.getFullYear()}-${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`;
+    const isOther=day.getMonth()!==month;
+    const isToday=day.toDateString()===today.toDateString();
+    const dayMs=meetings.filter(m=>m.date===dateStr);
+    html+=`<div class="month-day${isOther?' other-month':''}${isToday?' today':''}"><div class="day-num">${day.getDate()}</div>`;
+    dayMs.slice(0,2).forEach(m=>{html+=`<div class="month-event ${m.color}" onclick="openModal(${m.id})" title="${m.title}">${m.time} ${m.title}</div>`;});
+    if(dayMs.length>2) html+=`<div class="more-events">+${dayMs.length-2} more</div>`;
+    html+=`</div>`;
+    day.setDate(day.getDate()+1);
+    if(day>last && day.getDay()===0) break;
+  }
+  document.getElementById('monthGrid').innerHTML=html;
+}
+ 
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+ 
+renderUpcoming();
+renderWeek();
+renderMonth();
+</script>
+ 
 {% endblock %}
+ 

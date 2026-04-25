@@ -1,8 +1,5 @@
-/* ============================================================
-   Sky Portal – style.css
-   ============================================================ */
 
-/* ---------- Reset & Variables ---------- */
+/*Reset & Variables*/
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -34,7 +31,7 @@ body {
     min-height: 100vh;
 }
 
-/* ---------- Sidebar ---------- */
+/*Sidebar*/
 .sidebar {
     width: var(--sidebar-width);
     background: linear-gradient(180deg, var(--sky-blue-dark) 0%, var(--sky-blue-mid) 100%);
@@ -93,7 +90,7 @@ body {
     font-weight: 700;
 }
 
-/* ---------- Main wrapper ---------- */
+/*Main wrapper*/
 .main-wrapper {
     margin-left: var(--sidebar-width);
     display: flex;
@@ -102,7 +99,7 @@ body {
     flex: 1;
 }
 
-/* ---------- Header ---------- */
+/*Header*/
 .top-header {
     height: var(--header-height);
     background: var(--bg-card);
@@ -177,13 +174,13 @@ body {
     background: #c0392b;
 }
 
-/* ---------- Main content ---------- */
+/*Main content*/
 .main-content {
     flex: 1;
     padding: 28px 32px;
 }
 
-/* ---------- Cards ---------- */
+/*Cards*/
 .card {
     background: var(--bg-card);
     border-radius: var(--radius);
@@ -191,7 +188,7 @@ body {
     padding: 24px;
 }
 
-/* ---------- Buttons ---------- */
+/*Buttons*/
 .btn {
     display: inline-block;
     padding: 9px 22px;
@@ -234,7 +231,7 @@ body {
     padding: 6px 14px;
 }
 
-/* ---------- Django messages ---------- */
+/*Django messages*/
 .django-messages { margin-bottom: 20px; }
 
 .alert {
@@ -244,13 +241,13 @@ body {
     font-size: 0.9rem;
 }
 
-.alert-success { background: #d4edda; color: #155724; }
+.alert-success { background: hsl(134, 41%, 88%); color: #155724; }
 .alert-error,
 .alert-danger   { background: #f8d7da; color: #721c24; }
 .alert-warning  { background: #fff3cd; color: #856404; }
 .alert-info     { background: #d1ecf1; color: #0c5460; }
 
-/* ---------- Footer ---------- */
+/*Footer*/
 .main-footer {
     background: var(--bg-card);
     border-top: 1px solid var(--border);
@@ -260,7 +257,7 @@ body {
     color: var(--text-light);
 }
 
-/* ---------- Login & Register ---------- */
+/*Login & Register*/
 .auth-wrapper {
     background: var(--bg-page);
     display: flex;
@@ -317,7 +314,7 @@ body {
     margin-bottom: 16px;
 }
 
-/* ---------- Form ---------- */
+/*Form*/
 .form-group {
     margin-bottom: 16px;
 }
@@ -357,7 +354,7 @@ body {
     background: #fff;
 }
 
-/* ---------- Dashboard ---------- */
+/*Dashboard*/
 .stat-card {
     display: flex;
     flex-direction: column;
@@ -428,7 +425,7 @@ body {
     font-size: 0.95rem;
 }
 
-/* ---------- Teams Page ---------- */
+/*Teams Page*/
 .team-card {
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -506,7 +503,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* ---------- Team Detail ---------- */
+/*Team Detail*/
 .team-detail-header {
     display: flex;
     align-items: center;
@@ -574,7 +571,7 @@ body {
     margin-top: 6px;
 }
 
-/* ---------- Profile ---------- */
+/*Profile*/
 .profile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -594,7 +591,7 @@ body {
     color: var(--text-mid);
 }
 
-/* ---------- Responsive ---------- */
+/*Responsive */
 @media (max-width: 1024px) {
     .team-grid { grid-template-columns: repeat(2, 1fr); }
     .team-detail-grid { grid-template-columns: 1fr 1fr; }
@@ -612,7 +609,7 @@ body {
     .search-form { flex-direction: column; }
 }
 
-/* ---------- Team Members Table ---------- */
+/* Team Members Table*/
 .team-table {
     width: 100%;
     border-collapse: collapse;
@@ -649,4 +646,230 @@ body {
 
 .mb-8 {
     margin-bottom: 8px;
+}
+
+/*Visualization Page*/
+.viz-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.viz-grid-1 {
+    margin-bottom: 20px;
+}
+
+.chart-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card canvas {
+    flex: 1;
+}
+
+.viz-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/*Reports Page*/
+.reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.reports-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.reports-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.danger-title {
+    color: #e74c3c;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+
+/*Messaging*/
+.msg-subnav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.msg-tab {
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: var(--text-mid);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.msg-tab:hover {
+    background: var(--bg-page);
+    color: var(--text-dark);
+}
+
+.msg-tab.active {
+    background: var(--sky-blue-btn);
+    color: #fff;
+    font-weight: 600;
+}
+
+.msg-badge {
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.msg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.msg-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--text-mid);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+}
+
+.msg-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.msg-table tr:hover {
+    background: var(--bg-page);
+}
+
+.msg-unread {
+    background: #f0f7ff;
+}
+
+.msg-subject-link {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.msg-subject-link:hover {
+    color: var(--sky-blue-btn);
+}
+
+.msg-date {
+    color: var(--text-mid);
+    font-size: 0.85rem;
+}
+
+.msg-empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-mid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--sky-blue-btn);
+}
+
+.msg-recipients-select {
+    min-height: 100px;
+}
+
+.msg-body-textarea {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    margin-top: 4px;
+    display: block;
+}
+
+.msg-compose-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #fecaca;
 }

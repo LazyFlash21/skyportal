@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports – Sky Portal{% endblock %}
+
+{% block page_title %}Reports{% endblock %}
+
+{% block content %}
+
+<div class="reports-header">
+    <h2>Sky Management Report</h2>
+    <div class="reports-header-actions">
+        <a href="{% url 'export_pdf' %}" class="btn btn-primary">Export PDF</a>
+        <a href="{% url 'export_excel' %}" class="btn btn-outline">Export Excel</a>
+    </div>
+</div>
+
+<div class="reports-grid">
+    <div class="card stat-card">
+        <div class="stat-label">Total Teams</div>
+        <div class="stat-number">{{ total_teams }}</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Total Departments</div>
+        <div class="stat-number">{{ total_departments }}</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Teams Missing Managers</div>
+        <div class="stat-number">{{ missing_managers_count }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="danger-title">⚠️ Action Required: Teams Without Managers</h3>
+    {% if teams_without_managers %}
+    <table class="team-table">
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Department</th>
+                <th>Dept Head</th>
+                <th>Development Focus</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams_without_managers %}
+            <tr>
+                <td>{{ team.name }}</td>
+                <td>{{ team.department.name }}</td>
+                <td>{{ team.department.head|default:"N/A" }}</td>
+                <td class="text-mid">{{ team.development_focus }}</td>
+                <td>
+                    <a href="{% url 'team_detail' team.id %}" class="btn btn-primary btn-sm">View Team</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert-success">✅ All current teams have an assigned manager!</div>
+    {% endif %}
+</div>
+
+{% endblock %}

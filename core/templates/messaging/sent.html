@@ -1,0 +1,44 @@
+{% extends 'messaging/messaging_base.html' %}
+{% block msg_content %}
+
+<div class="card">
+    <h2 class="card-title" style="margin-bottom:16px;">Sent</h2>
+
+    {% if messages %}
+    <table class="msg-table">
+        <thead>
+            <tr>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in messages %}
+            <tr>
+                <td>{{ msg.recipient_list }}</td>
+                <td>
+                    <a href="{% url 'messaging_detail' msg.id %}" class="msg-subject-link">
+                        {{ msg.subject }}
+                    </a>
+                </td>
+                <td class="msg-date">{{ msg.created_at|date:"d M Y, H:i" }}</td>
+                <td>
+                    <a href="{% url 'messaging_delete' msg.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Remove this message from Sent?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="msg-empty">
+        <span style="font-size:2.5rem;">📤</span>
+        <p>No sent messages yet.</p>
+        <a href="{% url 'messaging_compose' %}" class="btn btn-primary">Compose a message</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

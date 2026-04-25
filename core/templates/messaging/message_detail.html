@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ msg.subject }} – Sky Portal{% endblock %}
+{% block page_title %}Message{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn btn-outline">← Back</a>
+</div>
+
+<div class="card" style="max-width:760px;">
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+        <h2 style="font-size:1.3rem; font-weight:700;">{{ msg.subject }}</h2>
+        <span class="msg-date">{{ msg.created_at|date:"d M Y, H:i" }}</span>
+    </div>
+
+    <div style="margin-bottom:16px; display:flex; flex-direction:column; gap:8px; font-size:0.9rem;">
+        <div style="display:flex; gap:12px;">
+            <span style="color:var(--text-mid); width:50px;">From</span>
+            <span>{{ msg.sender.get_full_name|default:msg.sender.username }}
+                {% if msg.sender.email %}<span class="msg-date">&lt;{{ msg.sender.email }}&gt;</span>{% endif %}
+            </span>
+        </div>
+        <div style="display:flex; gap:12px;">
+            <span style="color:var(--text-mid); width:50px;">To</span>
+            <span>
+                {% for r in msg.recipients.all %}
+                    {{ r.get_full_name|default:r.username }}{% if not forloop.last %}, {% endif %}
+                {% empty %}—{% endfor %}
+            </span>
+        </div>
+    </div>
+
+    <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+
+    <div style="line-height:1.7; color:var(--text-dark);">{{ msg.body|linebreaks }}</div>
+
+    <div style="display:flex; gap:10px; margin-top:24px;">
+        {% if not is_sender %}
+        <a href="{% url 'messaging_compose' %}?to={{ msg.sender.id }}" class="btn btn-primary">↩ Reply</a>
+        {% endif %}
+        <a href="{% url 'messaging_delete' msg.id %}"
+           class="btn btn-outline"
+           style="color:#e74c3c; border-color:#e74c3c;"
+           onclick="return confirm('Delete this message?')">🗑 Delete</a>
+    </div>
+</div>
+{% endblock %}

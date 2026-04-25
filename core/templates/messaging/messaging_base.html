@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Messages – Sky Portal{% endblock %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+<div class="msg-subnav">
+    <a href="{% url 'messaging_compose' %}" class="btn btn-primary" style="margin-right:auto;">✉ New Message</a>
+    <a href="{% url 'messaging_inbox' %}" class="msg-tab {% if active_tab == 'inbox' %}active{% endif %}">
+        Inbox {% if unread_count %}<span class="msg-badge">{{ unread_count }}</span>{% endif %}
+    </a>
+    <a href="{% url 'messaging_sent' %}" class="msg-tab {% if active_tab == 'sent' %}active{% endif %}">Sent</a>
+    <a href="{% url 'messaging_drafts' %}" class="msg-tab {% if active_tab == 'drafts' %}active{% endif %}">Drafts</a>
+</div>
+{% block msg_content %}{% endblock %}
+{% endblock %}

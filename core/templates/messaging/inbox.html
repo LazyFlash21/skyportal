@@ -1,0 +1,50 @@
+{% extends 'messaging/messaging_base.html' %}
+{% block msg_content %}
+
+<div class="card">
+    <h2 class="card-title" style="margin-bottom:16px;">Inbox
+        {% if unread_count %}
+            <span class="msg-badge" style="font-size:0.85rem; margin-left:6px;">{{ unread_count }} unread</span>
+        {% endif %}
+    </h2>
+
+    {% if statuses %}
+    <table class="msg-table">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status in statuses %}
+            <tr class="{% if not status.is_read %}msg-unread{% endif %}">
+                <td>{{ status.message.sender.get_full_name|default:status.message.sender.username }}</td>
+                <td>
+                    <a href="{% url 'messaging_detail' status.message.id %}" class="msg-subject-link">
+                        {% if not status.is_read %}<strong>{% endif %}
+                        {{ status.message.subject }}
+                        {% if not status.is_read %}</strong>{% endif %}
+                    </a>
+                </td>
+                <td class="msg-date">{{ status.message.created_at|date:"d M Y, H:i" }}</td>
+                <td>
+                    <a href="{% url 'messaging_delete' status.message.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this message?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="msg-empty">
+        <span style="font-size:2.5rem;">📭</span>
+        <p>Your inbox is empty.</p>
+        <a href="{% url 'messaging_compose' %}" class="btn btn-primary">Send a message</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

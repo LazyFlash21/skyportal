@@ -9,36 +9,40 @@
 </head>
 <body>
 
-    /*SIDEBAR/*
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <img src="{% static 'images/Sky_Group_logo_2020.png' %}" alt="Sky Logo" style="width:80px;">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/Sky_Group_logo_2020.png' %}" alt="Sky Logo" style="width:80px;">
+            </a>
         </div>
         <nav class="sidebar-nav">
             <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
             <a href="{% url 'teams' %}" class="nav-link {% if request.resolver_match.url_name == 'teams' or request.resolver_match.url_name == 'team_detail' %}active{% endif %}">Teams</a>
-            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'organisation' %}active{% endif %}">Organisation</a>
-            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'messages_view' %}active{% endif %}">Messages</a>
+            <a href="{% url 'organisation' %}" class="nav-link {% if request.resolver_match.url_name == 'organisation' %}active{% endif %}">Organisation</a>
+            <a href="{% url 'messaging_inbox' %}" class="nav-link {% if 'messaging' in request.resolver_match.url_name %}active{% endif %}">Messages</a>
             <a href="{% url 'schedule' %}" class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">Schedule</a>
-            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">Reports</a>
-            <a href="#" class="nav-link {% if request.resolver_match.url_name == 'data_visualisation' %}active{% endif %}">Data Visualisation</a>
+            <a href="{% url 'reports' %}" class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">Reports</a>
+            <a href="{% url 'visualization' %}" class="nav-link {% if request.resolver_match.url_name == 'visualization' %}active{% endif %}">Data Visualisation</a>
         </nav>
     </aside>
 
-    /*MAIN AREA*/
+    <!--MAIN AREA-->
     <div class="main-wrapper">
 
-        /*HEADER*/
+        <!--HEADER-->
         <header class="top-header">
             <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
             <div class="header-right">
-                <input type="text" class="search-bar" placeholder="Search">
+                <form method="GET" action="{% url 'teams' %}">
+                    <input type="text" name="q" class="search-bar" placeholder="Search teams...">
+                </form>
                 <a href="{% url 'profile' %}" class="btn-profile">Profile</a>
                 <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
             </div>
         </header>
 
-        /* PAGE CONTENT */
+        <!-- PAGE CONTENT -->
         <main class="main-content">
             {% if messages %}
                 <div class="django-messages">
@@ -51,7 +55,7 @@
             {% endblock %}
         </main>
 
-        /* FOOTER */
+        <!-- FOOTER -->
         <footer class="main-footer">
             <p>&copy; 2025 Sky UK Ltd | All rights reserved</p>
         </footer>

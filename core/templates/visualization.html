@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Visualisation · Sky Portal{% endblock %}
+
+{% block page_title %}Data Visualisation{% endblock %}
+
+{% block content %}
+
+<!-- KPI Strip -->
+<div class="viz-kpi-grid">
+    <div class="card stat-card">
+        <div class="stat-label">Departments</div>
+        <div class="stat-number">{{ kpis.departments }}</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Teams</div>
+        <div class="stat-number">{{ kpis.teams }}</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Members</div>
+        <div class="stat-number">{{ kpis.members }}</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Avg Team Size</div>
+        <div class="stat-number">{{ kpis.avg_team_size }}</div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="viz-grid-2">
+    <div class="card">
+        <h3 class="card-title">Teams per Department</h3>
+        <div style="position:relative; height:220px;">
+            <canvas id="chartTeamsPerDept"></canvas>
+        </div>
+    </div>
+    <div class="card">
+        <h3 class="card-title">Projects by Department Head</h3>
+        <div style="position:relative; height:220px;">
+            <canvas id="chartHeadVsProjects"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="viz-grid-1">
+    <div class="card">
+        <h3 class="card-title">Department to Project Name Breakdown</h3>
+        <div style="position:relative; height:200px;">
+            <canvas id="chartDeptProjectsStack"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 3 -->
+<div class="viz-grid-2">
+    <div class="card">
+        <h3 class="card-title">Team Size (Top 15)</h3>
+        <div style="position:relative; height:320px;">
+            <canvas id="chartMembersPerTeam"></canvas>
+        </div>
+    </div>
+    <div class="card">
+        <h3 class="card-title">Dependency Types</h3>
+        <div style="position:relative; height:320px;">
+            <canvas id="chartDependencyTypes"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 4 -->
+<div class="viz-grid-1">
+    <div class="card">
+        <h3 class="card-title">Concurrent Projects per Team (Top 10)</h3>
+        <div style="position:relative; height:200px;">
+            <canvas id="chartConcurrent"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- JSON Payload -->
+<script id="vizPayload" type="application/json">
+{
+  "teamsPerDept":      {{ chart_teams_per_dept|safe }},
+  "headVsProjects":    {{ chart_head_vs_projects|safe }},
+  "deptProjectsStack": {{ chart_dept_projects_stack|safe }},
+  "membersPerTeam":    {{ chart_members_per_team|safe }},
+  "dependencyTypes":   {{ chart_dependency_types|safe }},
+  "concurrent":        {{ chart_concurrent|safe }}
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/viz.js' %}"></script>
+
+{% endblock %}

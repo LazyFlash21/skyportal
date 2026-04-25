@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<!-- Stats Row -->
+<!-- start row -->
 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px;">
     
     <div class="card stat-card">
@@ -47,12 +47,12 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
+<!-- Quick Actions --> 
 <div class="card">
     <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">Quick Actions</h3>
     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
 
-        <a href="#" class="action-card">
+        <a href="{% url 'messaging_inbox' %}" class="action-card">
             <span class="action-icon">📥</span>
             <p class="action-title">Check Inbox</p>
         </a>
@@ -62,22 +62,22 @@
             <p class="action-title">Find Team</p>
         </a>
 
-        <a href="#" class="action-card">
+        <a href="{% url 'reports' %}" class="action-card">
             <span class="action-icon">📊</span>
             <p class="action-title">Check Reports</p>
         </a>
 
-        <a href="#" class="action-card">
+        <a href="{% url 'schedule' %}" class="action-card">
             <span class="action-icon">📅</span>
             <p class="action-title">Schedule Meeting</p>
         </a>
 
-        <a href="#" class="action-card">
+        <a href="{% url 'organisation' %}" class="action-card">
             <span class="action-icon">🏢</span>
             <p class="action-title">Organisation</p>
         </a>
 
-        <a href="#" class="action-card">
+        <a href="{% url 'visualization' %}" class="action-card">
             <span class="action-icon">📈</span>
             <p class="action-title">Data Visualisation</p>
         </a>

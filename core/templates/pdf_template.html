@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sky Engineering Report</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; color: #333; line-height: 1.5; }
+        h1 { color: #00428f; border-bottom: 2px solid #00428f; padding-bottom: 10px; }
+        h2 { color: #d9534f; margin-top: 30px; }
+        .summary-box { background-color: #f8f9fa; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; }
+        .summary-item { font-size: 16px; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 11px; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Sky Management Report</h1>
+
+    <div style="text-align:right; font-size:12px; color:#666; margin-bottom:20px;">
+        <strong>Report Generated:</strong> {{ generated_date }}
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-item"><strong>Total Departments:</strong> {{ total_departments }}</div>
+        <div class="summary-item"><strong>Total Teams:</strong> {{ total_teams }}</div>
+        <div class="summary-item"><strong>Teams Missing Managers:</strong> {{ missing_managers_count }}</div>
+    </div>
+
+    <h2>Action Required: Teams Without Managers</h2>
+
+    {% if teams_without_managers %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width:20%;">Team Name</th>
+                <th style="width:20%;">Department</th>
+                <th style="width:20%;">Dept Head</th>
+                <th style="width:40%;">Development Focus</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams_without_managers %}
+            <tr>
+                <td><strong>{{ team.name }}</strong></td>
+                <td>{{ team.department.name }}</td>
+                <td>{{ team.department.head|default:"N/A" }}</td>
+                <td>{{ team.development_focus|default:"Not specified" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>All current teams have an assigned manager. No action required.</p>
+    {% endif %}
+
+</body>
+</html>

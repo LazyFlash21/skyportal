@@ -1,0 +1,45 @@
+{% extends 'messaging/messaging_base.html' %}
+{% block msg_content %}
+
+<div class="card">
+    <h2 class="card-title" style="margin-bottom:16px;">Drafts</h2>
+
+    {% if drafts %}
+    <table class="msg-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>To</th>
+                <th>Last Saved</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for draft in drafts %}
+            <tr>
+                <td>
+                    <a href="{% url 'messaging_compose' %}?draft_id={{ draft.id }}" class="msg-subject-link">
+                        <em>{{ draft.subject }}</em>
+                    </a>
+                </td>
+                <td class="msg-date">{{ draft.recipient_list|default:"—" }}</td>
+                <td class="msg-date">{{ draft.created_at|date:"d M Y, H:i" }}</td>
+                <td style="display:flex; gap:6px;">
+                    <a href="{% url 'messaging_compose' %}?draft_id={{ draft.id }}" class="btn btn-sm">Edit</a>
+                    <a href="{% url 'messaging_delete_draft' draft.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Permanently delete this draft?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="msg-empty">
+        <span style="font-size:2.5rem;">📝</span>
+        <p>No drafts saved.</p>
+        <a href="{% url 'messaging_compose' %}" class="btn btn-primary">Start a new message</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

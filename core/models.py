@@ -37,3 +37,23 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return f"{self.name} – {self.team.name}"
+    
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipients = models.ManyToManyField(User, related_name='received_messages')
+    subject = models.CharField(max_length=200)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_draft = models.BooleanField(default=False)
+    recipient_list = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return f"{self.subject} – {self.sender.username}"
+
+class MessageStatus(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='statuses')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.message.subject} – {self.user.username}"

@@ -1,0 +1,49 @@
+{% extends 'messaging/messaging_base.html' %}
+{% block title %}{% if draft %}Edit Draft{% else %}New Message{% endif %} – Sky Portal{% endblock %}
+{% block page_title %}{% if draft %}Edit Draft{% else %}New Message{% endif %}{% endblock %}
+
+{% block msg_content %}
+<div class="card" style="max-width:760px;">
+    <h2 class="card-title" style="margin-bottom:20px;">
+        {% if draft %}Edit Draft{% else %}Compose Message{% endif %}
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">To</label>
+            <select name="recipients" class="form-control msg-recipients-select" multiple required>
+                {% for user in users %}
+                <option value="{{ user.id }}"
+                    {% if draft and user in draft.recipients.all %}selected{% endif %}
+                    {% if user.id in preselected_ids %}selected{% endif %}>
+                    {{ user.get_full_name|default:user.username }}
+                    {% if user.email %}({{ user.email }}){% endif %}
+                </option>
+                {% endfor %}
+            </select>
+            <small class="form-hint">Hold Ctrl to select multiple recipients.</small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" name="subject" class="form-control"
+                   placeholder="Message subject…"
+                   value="{% if draft %}{{ draft.subject }}{% endif %}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea name="body" class="form-control msg-body-textarea"
+                      placeholder="Write your message here…" required>{% if draft %}{{ draft.body }}{% endif %}</textarea>
+        </div>
+
+        <div class="msg-compose-actions">
+            <button type="submit" name="action" value="send" class="btn btn-primary">▶ Send</button>
+            <button type="submit" name="action" value="draft" class="btn btn-outline">💾 Save as Draft</button>
+            <a href="{% url 'messaging_inbox' %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
