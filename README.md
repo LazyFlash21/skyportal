@@ -48,39 +48,6 @@ bashpython manage.py runserver
 7. Open your browser and visit
 http://127.0.0.1:8000
 
-📁 Project Structure
-skyportal/
-├── core/                        # Main Django app
-│   ├── templates/               # HTML templates
-│   │   ├── base.html            # Shared base template
-│   │   ├── dashboard.html       # Dashboard page
-│   │   ├── teams.html           # Teams listing page
-│   │   ├── team_detail.html     # Team detail page
-│   │   ├── organisation.html    # Organisation page
-│   │   ├── schedule.html        # Schedule page
-│   │   ├── reports.html         # Reports page
-│   │   ├── visualization.html   # Data visualisation page
-│   │   ├── login.html           # Login page
-│   │   ├── register.html        # Register page
-│   │   ├── profile.html         # User profile page
-│   │   └── messaging/           # Messages templates
-│   ├── static/
-│   │   ├── css/
-│   │   │   └── style.css        # Shared stylesheet
-│   │   ├── js/
-│   │   │   └── viz.js           # Chart.js visualisation
-│   │   └── images/              # Sky logo and assets
-│   ├── models.py                # Database models
-│   ├── views.py                 # View functions
-│   └── admin.py                 # Admin panel config
-├── skyportal/
-│   ├── settings.py              # Django settings
-│   └── urls.py                  # URL routing
-├── data/                        # Sky Excel data file
-├── import_data.py               # Data import script
-├── add_members.py               # Team members script
-├── db.sqlite3                   # SQLite database
-└── manage.py                    # Django management
 
 📄 Pages
 URLPageDescription/DashboardStats, recent teams, quick actions/teams/TeamsBrowse and search all 46 teams/teams/<id>/Team DetailFull team info, members, dependencies/organisation/OrganisationDepartments and team structure/messages/MessagesInternal messaging system/schedule/ScheduleMeeting calendar and scheduling/reports/ReportsPDF and Excel management reports/visualization/Data Visualisation6 interactive Chart.js charts/login/LoginUser authentication/register/RegisterNew user registration/profile/ProfileUser profile management/admin/Admin PanelDjango admin interface
